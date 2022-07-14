@@ -22,8 +22,32 @@ services:
             - 6379
         volumes:
             - ~/redis_data:/data
+
+    # ldap:
+    #    restart: always
+    #    image: rroemhild/test-openldap
+    #    container_name: ldap
+    #    expose:
+    #        - 389
+
+    # See https://github.com/jwilder/nginx-proxy for documentation on how to configure the nginx-proxy container,
+    # and https://github.com/overleaf/overleaf/wiki/HTTPS-reverse-proxy-using-Nginx for an example of some recommended
+    # settings. We recommend using a properly managed nginx instance outside of the Overleaf Server Pro setup,
+    # but the example here can be used if you'd prefer to run everything with docker-compose
+
+    # nginx-proxy:
+    #     image: jwilder/nginx-proxy
+    #     container_name: nginx-proxy
+    #     ports:
+    #       #- "80:80"
+    #       - "443:443"
+    #     volumes:
+    #       - /var/run/docker.sock:/tmp/docker.sock:ro
+    #       - /home/sharelatex/tmp:/etc/nginx/certs
     sharelatex:
         restart: always
+        # Server Pro users:
+        # image: quay.io/sharelatex/sharelatex-pro
         image: sharelatex/sharelatex
         container_name: sharelatex
         depends_on:
@@ -32,30 +56,40 @@ services:
             redis:
                 condition: service_started
         ports:
-            - 8888:8888
+            - 80:80
         links:
             - mongo
             - redis
         volumes:
             - ~/sharelatex_data:/var/lib/sharelatex
+            ########################################################################
+            ####  Server Pro: Uncomment the following line to mount the docker  ####
+            ####             socket, required for Sibling Containers to work    ####
+            ########################################################################
+            # - /var/run/docker.sock:/var/run/docker.sock
         environment:
+
             SHARELATEX_APP_NAME: Overleaf Community Edition
+
             SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
+
+            # Same property, unfortunately with different names in
+            # different locations
             SHARELATEX_REDIS_HOST: redis
             REDIS_HOST: redis
+
             ENABLED_LINKED_FILE_TYPES: 'url,project_file'
+
+            # Enables Thumbnail generation using ImageMagick
             ENABLE_CONVERSIONS: 'true'
+
+            # Disables email confirmation requirement
             EMAIL_CONFIRMATION_DISABLED: 'true'
+
+            # temporary fix for LuaLaTex compiles
+            # see https://github.com/overleaf/overleaf/issues/695
             TEXMFVAR: /var/lib/sharelatex/tmp/texmf-var
-        command: 
-            apt-get install -y wget
-            && mkdir /texliveonfly_dir
-            && cd /texliveonfly_dir
-            && sharelatex tlmgr update --self
-            && sharelatex tlmgr install texliveonfly
-            && wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/main.tex
-            && sharelatex texliveonfly main.tex
-            
+
             ## Set for SSL via nginx-proxy
             #VIRTUAL_HOST: 103.112.212.22
 
@@ -111,4 +145,9 @@ services:
 
 
             # SHARELATEX_PROXY_LEARN: "true"
-
+    sharelatexsetup:
+        image: sharelatex/sharelatex
+        depends_on:
+            - sharelatex
+        restart: "no"
+        command: shell wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh | sh
