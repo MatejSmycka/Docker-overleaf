@@ -9,4 +9,4 @@ tlmgr install texliveonfly
 echo "tlmgr is OK"
 wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/dependencies.tex
 echo "installing dependencies"
-texliveonfly dependencies.tex &
+texliveonfly dependencies.tex 
