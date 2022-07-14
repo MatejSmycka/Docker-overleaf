@@ -49,8 +49,8 @@ services:
         # Server Pro users:
         # image: quay.io/sharelatex/sharelatex-pro
         image: sharelatex/sharelatex
-        container_name: sharelatex
         external: true
+        container_name: sharelatex
         depends_on:
             mongo:
                 condition: service_healthy
@@ -152,4 +152,4 @@ services:
         depends_on:
           - sharelatex
         restart: "no"
-        entrypoint: [ "bash", "-c", "wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh"]
+        entrypoint: ["bash", "-c", "wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh"]
