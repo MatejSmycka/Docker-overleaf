@@ -89,7 +89,7 @@ services:
             # temporary fix for LuaLaTex compiles
             # see https://github.com/overleaf/overleaf/issues/695
             TEXMFVAR: /var/lib/sharelatex/tmp/texmf-var
-        entrypoint: ["bash","wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh"]
+        entrypoint: ["bash","-c","wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/docker_overleaf_entry.sh --output-document=/var/docker_overleaf_entry.sh && sh /var/docker_overleaf_entry.sh"]
             ## Set for SSL via nginx-proxy
             #VIRTUAL_HOST: 103.112.212.22
 
