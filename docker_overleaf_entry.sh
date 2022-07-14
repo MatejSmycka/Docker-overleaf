@@ -1,4 +1,4 @@
-apt-get install -y wget
+bash -c "/sbin/my_init"
 mkdir /var/texliveonfly_dir
 cd /var/texliveonfly_dir
 tlmgr update --self
