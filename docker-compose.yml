@@ -150,4 +150,4 @@ services:
         depends_on:
             - sharelatex
         restart: "no"
-        command: shell wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh
+        command: wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh
