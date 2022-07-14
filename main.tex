@@ -1,0 +1,285 @@
+% PACKAGES
+\documentclass{article}
+\usepackage{xurl}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{graphicx}
+\usepackage{xcolor, colortbl}
+\usepackage{sectsty}
+\sectionfont{\color{blue}}
+\usepackage{fancyhdr}
+\usepackage{titling}
+\usepackage[export]{adjustbox}
+\usepackage{float}
+
+
+
+
+% SIZING
+\usepackage[fontsize=11pt]{fontsize}
+\usepackage[a4paper,top=1.7cm,bottom=2.7cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\renewcommand{\footnotesize}{\normalsize}
+\setlength{\parindent}{0pt}
+
+% FRONT PAGE
+\pretitle{%
+  \begin{center}
+	\includegraphics[scale=0.4]{csirt_logo.png}
+	\end{center}}
+\title{\begin{center}
+\Huge \textbf {Penetration Test Report\\ 
+ \textcolor{gray}{APPLICATION}}
+\end{center}}
+\author{\\ \LARGE  CSIRT Masaryk University}
+\date{\today}
+\posttitle{}
+
+% FOOTER
+\renewcommand{\headrulewidth}{0 pt}
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\textbf{ \textcolor{red}{CONFIDENTIAL}} \\
+\thepage
+}
+\rfoot{\normalsize \textcolor{blue}{csirt-info@muni.cz \\ +420 549 494 242}}
+\lfoot{
+\begin{left}
+\includegraphics[scale=0.15,valign=c]{csirt_logo.png}
+\end{left}
+}
+
+
+
+% DOCUMENT
+\begin{document}
+\maketitle
+\begin{center}
+\end{center}
+\vspace*{\fill}
+\begin{center}
+\textbf{\textcolor{red}{CONFIDENTIAL}}
+\end{center}
+\newpage
+\tableofcontents
+\newpage
+% ------------
+% ------------
+% ------------
+% ------------
+% DISCLAIMER -
+% ------------
+% ------------
+% ------------
+% ------------
+\section{Disclaimer}
+This document describes vulnerabilities found during the penetration test performed between \textbf{6.12.2021} and \textbf{30.3.2022}. The findings and recommendations reflect only the information gathered during the assessment and not any changes or modifications made outside of that period.
+\\
+\\
+Time-limited assessments might not allow a complete evaluation of all features and possible security shortages. Therefore, testers prioritize the engagement to identify the most critical issues that would have the most significant impact if exploited by a threat actor. CSIRT-MU recommends conducting similar assessments regularly to ensure that known shortcomings were fixed correctly and to detect potential newly emerged issues.
+\\
+\\
+This document is intended exclusively for the contracting authority's internal needs, and the recommended remediations of found vulnerabilities should only be taken as suggestions.
+\newpage
+
+% ------------
+% ------------
+% ------------
+% ------------
+% ---SCOPE ---
+% ------------
+% ------------
+% ------------
+% ------------
+\section{Scope}
+
+The assessment was performed as a \textbf{Whitebox} test – the testers had prior access to all roles in the application. The source code was available for inspection, and the authors explained details about the application’s behavior.
+\\
+\\
+The focus was on assessing internally developed software stacks, technical implementation of customer loyalty and rewards programs, e-commerce and payment processing applications and access management. 
+
+Penetration testers focused only on the web applications themselves, meaning that external entities such as \textit{id.muni.cz} and \textit{MUNI accounts} were omitted. Since the application ran in a production environment during the test, the server hosting the application was also considered in-scope.
+\\
+\\
+Penetration testers focused only on the client's environment, meaning that external entities such as payment gates and social media accounts were omitted. 
+\\
+\\
+The tested applications consisted of the following:
+\subsection*{APPNAME}
+Application serving as an evidence of people related to APPNAME centre.\\
+\\
+\textbf{URL}: \href{https://APPNAME.muni.cz/aplikace/APPNAME}{https://APPNAME.muni.cz/aplikace/APPNAME}
+% -------------
+% -------------
+% -------------
+% -------------
+% PREPRACOVAT FORMU, JE TO NEPREHLEDNE POKUD JE VICE APPS
+% -------------
+% -------------
+% -------------
+% -------------
+\textbf{Roles}: 
+\begin{itemize}
+    \item Administrator with full privileges.
+    \item Authenticated user with access to some  functionality.
+    \item Authenticated user without any access to  functionality.
+\end{itemize}
+
+
+The defined scope consists of the 10.0.17.0/24 subnet described below. 
+\\
+\\
+{\Large10.0.17.0/24 Subnet \textbf{\footnote{10.0.17.50 and 10.0.17.51 were added to the scope during the assessment.}}}
+\begin{table}[h]
+	\centering
+	{\large
+		\begin{tabular}{|l|r|}
+			\rowcolor{lightgray}
+			\hline Hostname                                            & IP address \\
+			\hline eggdicator.warehouse.lebonboncroissant.com          & 10.0.17.10 \\
+			\hline goldenticket.warehouse.lebonboncroissant.com        & 10.0.17.11 \\
+			\hline scrumdiddlyumptious.warehouse.lebonboncroissant.com & 10.0.17.12 \\
+			\hline whatchamacallit.warehouse.lebonboncroissant.com     & 10.0.17.13 \\
+			\hline charley.warehouse.lebonboncroissant.com             & 10.0.17.14 \\
+			\hline bucket.warehouse.lebonboncroissant.com              & 10.0.17.15 \\
+			\hline hornswoggler.warehouse.lebonboncroissant.com        & 10.0.17.16 \\
+			\hline crunch.rockbox.warehouse.lebonboncroissant.com      & 10.0.17.50 \\
+			\hline crunch-serial.warehouse.lebonboncroissant.com       & 10.0.17.51 \\
+			\hline rockbox.warehouse.lebonboncroissant.com             & 10.0.17.87 \\
+			\hline 
+		\end{tabular}}
+\end{table}
+\\
+\\
+This subnet represents the LBC's internal company network. It comprises development servers, API servers, and the B2B infrastructure. 
+\newpage
+% ------------
+% ------------
+% ------------
+% ------------
+% EXEC. SUMMARY
+% ------------
+% ------------
+% ------------
+% ------------
+\newpage
+\section{Executive Summary}
+During the penetration test of APPNAME applications, experts from CSIRT-MU thoroughly tested the security posture of applications defined in the scope. The assessment took place from 6.12.2021 to 30.3.2022 and was the first iteration of the test.
+\\
+\\
+The testers were able to obtain \textbf{full access to sensitive data} stored in the applications APPNAME and APPNAME by chaining multiple vulnerabilities and weakpoints. Throughout the assessment, the following vulnerabilities and shortcomings with critical impact were found:
+\begin{itemize}
+    \item Vulnerability allowing authenticated user with low privileges to access all sensitive data stored in database.
+    \item Weak authentication mechanisms. Testers were able to attack user accounts due to missing protection mechanisms, bad password storage and missing password policy.
+    \item Missing input-validation mechanisms in multiple places leading to multiple vulnerabilities.
+\end{itemize}
+
+One of the issues with the potential to gain access to sensitive data was mitigated during the test after testers notified the administrators. Overall, we would like to highlight the exemplary cooperation of the APPNAME IT team during the entire test period.
+\\
+\\
+Multiple other flaws with different impacts and probabilities of exploitation were found during the test. Some of the findings can be easily rectified, while others might require a more sophisticated approach. Each finding contains remediation suggestions which can be helpful and should be taken into account. The most common flaw leading to most vulnerabilities is missing or poor validation of user input. Adding proper input validation will greatly benefit the general security posture of tested applications.
+\\
+\\
+Due to the character of discovered issues, we \textbf{recommend addressing them as soon as possible} according to the stated severity and potential impact. After fixing the issues, we recommend to contact CSIRT-MU for retesting in order to verify the measures taken. CSIRT-MU is also ready to help with issues remediation.
+\\
+\\
+Due to the character of discovered issues, we recommend addressing them as soon as possible according to the stated severity and potential impact.
+LBC may also benefit from revisiting its security policies and their enforcement.\\
+\\
+Technical details and remediation recommendations follow in the next part of this document. 
+\newpage
+% ------------
+% ------------
+% ------------
+% ------------
+% --FINDINGS--
+% ------------
+% ------------
+% ------------
+% ------------
+\section{Findings and Technical Details}
+The following sections present a detailed report on discovered flaws along with potential impact, remediation suggestions and references for further explanation of the given topics.
+\\
+
+Findings are also assigned a CVSS score which defines a way to uniformly and consistently describe the characteristics and severity of vulnerabilities based on their security impact and probability of misuse. 
+
+Based on the CVSS score, the findings are divided into four categories:
+\begin{itemize}
+	\item \textcolor{red}{Critical/High severity (CVSS 7.0 – 10.0)}
+	\item \textcolor{orange}{Medium severity (CVSS 4.0 – 6.9)}
+	\item \textcolor{green}{Low severity (CVSS 0.1 – 3.9)}
+	\item \textcolor{cyan}{Info (CVSS 0.0)}
+\end{itemize}
+Each CVSS also contains an attack vector, which describes given vulnerability and consists of:
+\begin{itemize}
+	\item \textbf{\textcolor{blue}{Attack Vector (AV):}} \\ This metric reflects the context by which vulnerability exploitation is possible.
+	\item \textbf{\textcolor{blue}{Attack Complexity (AC):}} \\ This metric describes the conditions beyond the attacker's control that must exist in order to exploit the vulnerability.
+	\item \textbf{\textcolor{blue}{Privileges Required (PR):}} \\ This metric describes the level of privileges an attacker must possess before successfully exploiting the vulnerability
+	\item \textbf{\textcolor{blue}{User Interaction (UI):}} \\ This metric captures the requirement for a human user, other than the attacker, to participate in the successful compromise of the vulnerable component.
+	\item \textbf{\textcolor{blue}{Scope (S):}} \\ This metric captures whether a vulnerability in one vulnerable component impacts resources in components beyond its security scope.
+	\item \textbf{\textcolor{blue}{Confidentiality (C):}} \\ This metric measures the impact on the confidentiality of the information resources managed by a software component due to a successfully exploited vulnerability.
+	\item \textbf{\textcolor{blue}{Integrity (I):}} \\ This metric refers to the loss of integrity. Integrity expresses to the trustworthiness and veracity of information.
+	\item \textbf{\textcolor{blue}{Availability (A):}} \\ This metric refers to the loss of availability of the impacted component itself.
+\end{itemize}
+\newpage
+% -------------
+% -------------
+% -------------
+% -------------
+% HIGH SEVERITY
+% -------------
+% -------------
+% -------------
+% -------------
+\section{Critical/High Severity Findings (0)}
+
+\newpage
+% ---------------
+% ---------------
+% ---------------
+% ---------------
+% MEDIUM SEVERITY
+% ---------------
+% ---------------
+% ---------------
+% ---------------
+\section{Medium Severity Findings (1)}
+\\\\
+\subsection{Example vulnerability}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|p{0.1\linewidth} | p{0.85\linewidth}|} \rowcolor{orange}
+        \hline & \\
+        \hline Severity: & \textcolor{orange}{\textbf{CVSS Score: 4.7 - Medium}} (AV:P/AC:H/PR:L/UI:R/S:C/C:N/I:H/A:N)\\
+        \hline Impact: & very bad customer sad  \\
+        \hline Hosts: & 127.0.0.1 \\
+        \hline Role: &Authenticated \\
+        \hline
+    \end{tabular}
+\end{table}
+\vspace{-7mm}
+
+\subsubsection*{Description}
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed elit dui, pellentesque a, faucibus vel, interdum nec, diam. Curabitur ligula sapien, pulvinar a vestibulum quis, facilisis vel sapien. Nam sed tellus id magna elementum tincidunt.  
+
+
+
+\subsubsection*{Remedation}
+Fix vulnerability   
+
+\newpage
+% ------------
+% ------------
+% ------------
+% ------------
+% LOW SEVERITY
+% ------------
+% ------------
+% ------------
+% ------------
+\section{Low Severity Findings (0)}
+
+
+
+\end{document}
