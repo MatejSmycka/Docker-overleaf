@@ -1,7 +1,9 @@
-docker compose up &
-wait
-# docker exec sharelatex /bin/bash -c "cd /var/www/sharelatex; grunt user:create-admin --email=UCO@muni.cz"
-# this could be used for automated creation of user accounts
-docker commit sharelatex sharelatex/sharelatex:with-texlive-full
-cd full_run
-docker compose up &
+apt-get install -y wget
+mkdir /texliveonfly_dir
+cd /texliveonfly_dir
+sharelatex tlmgr update --self
+sharelatex tlmgr install texliveonfly
+wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/main.tex
+sharelatex texliveonfly main.tex
+            
+     
