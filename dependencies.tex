@@ -12,7 +12,7 @@
 \usepackage{fancyhdr}
 \usepackage{titling}
 \usepackage[export]{adjustbox}
-\usepackage{float}l
+\usepackage{float}
 
 
 
@@ -26,7 +26,7 @@
 % FRONT PAGE
 \pretitle{%
   \begin{center}
-	\includegraphics[scale=0.4]{csirt_logo.png}
+	\includegraphics[scale=0.5]{csirt2.png}
 	\end{center}}
 \title{\begin{center}
 \Huge \textbf {Penetration Test Report\\ 
@@ -46,7 +46,7 @@
 \rfoot{\normalsize \textcolor{blue}{csirt-info@muni.cz \\ +420 549 494 242}}
 \lfoot{
 \begin{left}
-\includegraphics[scale=0.15,valign=c]{csirt_logo.png}
+\includegraphics[scale=0.15,valign=c]{csirt2.png}
 \end{left}
 }
 
@@ -232,8 +232,46 @@ Each CVSS also contains an attack vector, which describes given vulnerability an
 % -------------
 % -------------
 % -------------
-\section{Critical/High Severity Findings (0)}
+\section{Critical/High Severity Findings (1)}
 
+\subsection{Sensitive Customer Data Exposure due to Misconfiguration of Service}\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+	\rowcolor{red}
+	\hline                  &                                                                             \\
+	\hline Severity:        & \textcolor{red}{CVSS 10.0 - Critical} (AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H) \\
+	\hline Impact:          & Confidential information leakage and loss of integrity and availability.    \\
+	\hline Hosts:           & charley.warehouse.lebonboncroissant.com                                     \\
+	\hline Role:            & Unauthenticated                                                             \\
+	\hline
+\end{tabular}
+\end{table} 
+\subsubsection*{Description} MySQL database account “root” is configured with an empty password and open to the internet, therefore all data contained in the database is exposed. This data includes names, addresses, emails, passwords etc. of LBC customers.
+\subsubsection*{Business Impact}
+ With  approximately 900 users from European countries, many of them under the protection of GDPR penalties of up to 10 million dollars may apply, due to insufficient protection of clients in the event of data leak. \\
+Other charges may apply based on customer nationality or location.
+\subsubsection*{Remediation}Service should not be publicly available and a strong password policy should be enforced for database users.
+\subsubsection*{References}
+\begin{itemize}
+	\item \href{https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/04-Authentication_Testing/07-Testing_for_Weak_Password_Policy}{Testing for Weak Password Policy}
+	              
+	\item \href{https://www.vistainfosec.com/blog/everything-you-need-to-know-about-gdpr-data-breach-fines-penalties/}{GDPR data breach fines penalties}
+	\item  \href{https://gdpr-info.eu/art-25-gdpr/ }{GDPR Art 25}
+	\item  \href{https://gdpr-info.eu/art-32-gdpr/}{GDPR Art 32}
+\end{itemize}
+\newpage
+\subsubsection*{Steps to Reproduce}\\
+\begin{enumerate}
+	\item 
+	      We connect to the database with username root and an empty password
+	      \\\\
+	      \includegraphics[scale=0.8]{img/1.PNG}\\ \item 
+	      After selecting proper database, we are able to gather information about LBC customers\\\\
+	      \includegraphics[scale=0.8]{img/2.PNG}\\
+	\item 
+	      To enumerate users from Europe a SQL query which returns all phone numbers with European prefix.\\\\
+	      \includegraphics[scale=0.7]{img/3.PNG}
+\end{enumerate}
 \newpage
 % ---------------
 % ---------------
@@ -244,30 +282,25 @@ Each CVSS also contains an attack vector, which describes given vulnerability an
 % ---------------
 % ---------------
 % ---------------
-\section{Medium Severity Findings (1)}
+\section{Medium Severity Findings (4)}
 \\\\
-\subsection{Example vulnerability}
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|p{0.1\linewidth} | p{0.85\linewidth}|} \rowcolor{orange}
-        \hline & \\
-        \hline Severity: & \textcolor{orange}{\textbf{CVSS Score: 4.7 - Medium}} (AV:P/AC:H/PR:L/UI:R/S:C/C:N/I:H/A:N)\\
-        \hline Impact: & very bad customer sad  \\
-        \hline Hosts: & 127.0.0.1 \\
-        \hline Role: &Authenticated \\
-        \hline
-    \end{tabular}
+\subsection{WMCI API Token Contains Password Information }\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+	\rowcolor{orange}
+	\hline                  &                                                                               \\
+	\hline Severity:        & \textcolor{orange}{CVSS 5.8 - Medium} (AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:N/A:N)   \\ 
+	\hline Impact:          & \begin{tabular}{@{}l@{}}Attacker learns about passwords used in LBC's network \\ and can try the password for all other services.\end{tabular}\\
+	\hline Hosts:           & scrumdiddlyumptious.warehouse.lebonboncroissant.com                           \\
+	\hline Role:            & Unauthenticated                                                               \\
+	\hline
+\end{tabular}
 \end{table}
-\vspace{-7mm}
-
-\subsubsection*{Description}
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed elit dui, pellentesque a, faucibus vel, interdum nec, diam. Curabitur ligula sapien, pulvinar a vestibulum quis, facilisis vel sapien. Nam sed tellus id magna elementum tincidunt.  
-
-
-
-\subsubsection*{Remedation}
-Fix vulnerability   
-
+\subsubsection*{Description} \\The API token from the "Hardcoded secrets in the LBC Marketplace web application" is base64-encoded. It is a JSON Web Token and contains a name and a password field. An attacker can learn about the password culture in the network. In the case that the password is used somewhere else in the LBC's network, it could be used in an attack.\subsubsection*{Business Impact}\\Depends on further attacks made.\subsubsection*{Remediation}\\The token should not have a password field. It does not need one to be used for authentication.\\\\\subsubsection*{Steps to Reproduce}\begin{enumerate}
+\item	Take the apiKey from the previous issue and decode it from base 64.
+\item	The decoded key is a JWT token. You can view its payload and see that it contains a “pw” field.
+\end{enumerate}
+\includegraphics[scale=0.5]{img/jwt.png}
 \newpage
 % ------------
 % ------------
@@ -278,7 +311,67 @@ Fix vulnerability
 % ------------
 % ------------
 % ------------
-\section{Low Severity Findings (0)}
+\section{Low Severity Findings (1)}
+\subsection{Default Apache Tomcat Page}\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+	\rowcolor{green}
+	\hline                  &                                                                         \\
+	\hline Severity:        & \textcolor{green}{CVSS 2.8 - Low} (AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N) \\
+	
+	\hline Impact:          & Web server fingerprinting, which could be used in further exploitation. \\
+	\hline Hosts:           & crunch.warehouse.lebonboncroissant.com                                  \\
+	\hline Role:            & Unauthenticated                                                         \\
+	\hline
+\end{tabular}
+\end{table}
+\subsubsection*{Description} \\A default Apache Tomcat page is displayed upon connecting to the host. This makes for an easy enumeration of the employed web server.\subsubsection*{Business Impact}\\ Could cause valuable information leaks that could be used for further exploitation.\subsubsection*{Remediation}\\We suggest replacing all generic and web server-specific pages with LBC-created custom pages. This increases the difficulty for an attacker to enumerate the webserver.
+\\ \\
+Separate development instances from production network.
+\subsubsection*{References}\\
+\href{https://kennel209.gitbooks.io/owasp-testing-guide-v4/content/en/web_application_security_testing/fingerprint_web_application_otg-info-009.html}{Web Application Fingerprinting}\\
+\href{https://www.valencynetworks.com/kb/web-server-default-welcome-page.html}{Web Server Default Pages}\\
+\subsubsection*{Steps to Reproduce}\begin{enumerate}
+\item	Go to \url{crunch.warehouse.lebonboncroissant.com:9090/}.
+\end{enumerate}
+\begin{center}
+	\includegraphics[scale=0.4]{img/tomcat_default.png}
+\end{center}
+\newpage
+% -------------
+% -------------
+% -------------
+% -------------
+% INFO SEVERITY
+% -------------
+% -------------
+% -------------
+% -------------
+\section{Info (1)}
+\subsection{Password Reuse Across LBC Store Employees}\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+	\rowcolor{cyan}
+	\hline & \\
+	\hline Severity: & \textcolor{cyan}{CVSS 0.0 - Info} \\
+	\hline Business impact:     & Medium                                                             \\
+	\hline Impact: & \begin{tabular}{@{}l@{}}In case of password compromise, this makes the compromised accounts & more valuable for the attacker\end{tabular} \\
+	\hline Hosts: & 	charley.warehouse.lebonboncroissant.com\\
+	\hline Role: & Unauthenticated \\
+	\hline
+\end{tabular}
+\end{table}
+\subsubsection*{Description} \\	From the database records we can see that all the LBC stores have very simple and, in many cases, duplicate passwords. If an attacker finds out the password for a single store, then he can impersonate all the other stores using the same password.
+
+\subsubsection*{Business Impact} \\	Financial loss and potential loss of company reputation.
+
+\subsubsection*{Remediation} \\	Enforce strong password policies and educate all workers about password approach.
+\subsubsection*{Steps to Reproduce}\begin{enumerate}
+\item Login to the Postgres database.
+\item In the "logins" table, you can see the passwords for the LBC employees.
+\end{enumerate}
+\includegraphics[scale=0.5]{img/same_passwords.png}
+\newpage
 
 
 
