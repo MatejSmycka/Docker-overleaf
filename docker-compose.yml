@@ -1,5 +1,27 @@
 version: '2.2'
 services:
+    mongo:
+        restart: always
+        image: mongo:4.0
+        container_name: mongo
+        expose:
+            - 27017
+        volumes:
+            - ~/mongo_data:/data/db
+        healthcheck:
+            test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+            interval: 10s
+            timeout: 10s
+            retries: 5
+
+    redis:
+        restart: always
+        image: redis:5
+        container_name: redis
+        expose:
+            - 6379
+        volumes:
+            - ~/redis_data:/data
     sharelatex:
         restart: always
         image: sharelatex/sharelatex
@@ -25,7 +47,15 @@ services:
             ENABLE_CONVERSIONS: 'true'
             EMAIL_CONFIRMATION_DISABLED: 'true'
             TEXMFVAR: /var/lib/sharelatex/tmp/texmf-var
-
+        command: 
+            apt-get install -y wget
+            && mkdir /texliveonfly_dir
+            && cd /texliveonfly_dir
+            && sharelatex tlmgr update --self
+            && sharelatex tlmgr install texliveonfly
+            && wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/main.tex
+            && sharelatex texliveonfly main.tex
+            
             ## Set for SSL via nginx-proxy
             #VIRTUAL_HOST: 103.112.212.22
 
@@ -82,25 +112,3 @@ services:
 
             # SHARELATEX_PROXY_LEARN: "true"
 
-    mongo:
-        restart: always
-        image: mongo:4.0
-        container_name: mongo
-        expose:
-            - 27017
-        volumes:
-            - ~/mongo_data:/data/db
-        healthcheck:
-            test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
-            interval: 10s
-            timeout: 10s
-            retries: 5
-
-    redis:
-        restart: always
-        image: redis:5
-        container_name: redis
-        expose:
-            - 6379
-        volumes:
-            - ~/redis_data:/data
