@@ -1,4 +1,5 @@
-/sbin/./my_init --no-kill-all-on-exit
+/sbin/./my_init &
+echo "initialization"
 mkdir /var/texliveonfly_dir
 cd /var/texliveonfly_dir
 wait
