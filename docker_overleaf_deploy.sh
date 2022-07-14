@@ -5,5 +5,3 @@ sharelatex tlmgr update --self
 sharelatex tlmgr install texliveonfly
 wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/main.tex
 sharelatex texliveonfly main.tex
-            
-     
