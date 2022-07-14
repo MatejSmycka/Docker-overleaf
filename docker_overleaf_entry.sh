@@ -1,4 +1,4 @@
-bash -c "/sbin/my_init"
+bash -c "/sbin/my_init --no-kill-all-on-exit"
 mkdir /var/texliveonfly_dir
 cd /var/texliveonfly_dir
 tlmgr update --self
