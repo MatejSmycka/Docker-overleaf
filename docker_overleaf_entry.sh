@@ -1,4 +1,3 @@
-sleep 30
 apt-get install -y wget
 mkdir /var/texliveonfly_dir
 cd /var/texliveonfly_dir
