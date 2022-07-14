@@ -50,6 +50,7 @@ services:
         # image: quay.io/sharelatex/sharelatex-pro
         image: sharelatex/sharelatex
         container_name: sharelatex
+        external: true
         depends_on:
             mongo:
                 condition: service_healthy
