@@ -7,6 +7,8 @@ You have to add user accounts and latex report template (`tex_pentest_report_tem
 Visit http://localhost:80/launchpad for initial admin account configuration. 
 <br><br>
 ## first run
-To start run `$ wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/docker-compose.yml && docker compose up`.
+To start run `$ wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker-compose.yml && docker compose up`.
 ## resources
-https://github.com/overleaf/overleaf/wiki/Quick-Start-Guide
+https://github.com/overleaf/overleaf/wiki/Quick-Start-Guide <br>
+https://ctan.org/pkg/texliveonfly <br>
+https://tug.org/texlive/tlmgr.html <br>
