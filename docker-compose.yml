@@ -149,4 +149,4 @@ services:
         depends_on:
           - sharelatex
         restart: "no"
-        entrypoint: [ "bash", "-c", "wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh"]  
+        entrypoint: [ "bash", "-c", "wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh"]
