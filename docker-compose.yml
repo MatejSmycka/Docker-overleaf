@@ -49,7 +49,6 @@ services:
         # Server Pro users:
         # image: quay.io/sharelatex/sharelatex-pro
         image: sharelatex/sharelatex
-        external: true
         container_name: sharelatex
         depends_on:
             mongo:
@@ -147,9 +146,8 @@ services:
             # SHARELATEX_PROXY_LEARN: "true"
     sharelatexsetup:
         image: sharelatex/sharelatex
-        volumes:
-          - sharelatex:/
         depends_on:
           - sharelatex
         restart: "no"
+        command: sleep 30
         entrypoint: ["bash", "-c", "wget https://github.com/MatejSmycka/Docker-overleaf/blob/main/docker_overleaf_entry.sh && sh docker_overleaf_entry.sh"]
