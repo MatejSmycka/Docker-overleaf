@@ -7,8 +7,8 @@ sleep 30
 tlmgr update --self
 tlmgr install texliveonfly
 echo "tlmgr is OK"
-wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/dependencies.tex --output-document=/var/dependencies.tex
+wget https://raw.githubusercontent.com/MatejSmycka/Docker-overleaf/main/dependencies.tex --output-document=/var/texliveonfly_dir/dependencies.tex
 echo "installing dependencies"
-texliveonfly /var/dependencies.tex
+texliveonfly /var/texliveonfly_dir/dependencies.tex
 #tlmgr install scheme-full
 wait
