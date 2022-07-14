@@ -45,7 +45,7 @@ services:
     #       - /var/run/docker.sock:/tmp/docker.sock:ro
     #       - /home/sharelatex/tmp:/etc/nginx/certs
     sharelatex:
-        restart: on-failure
+        restart: always
         # Server Pro users:
         # image: quay.io/sharelatex/sharelatex-pro
         image: sharelatex/sharelatex
